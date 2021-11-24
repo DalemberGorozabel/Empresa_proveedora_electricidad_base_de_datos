@@ -1,0 +1,12 @@
+Consulta 3
+
+-->Numero de mantenimiento por tecnico, lugar y año
+select nombre_tecnico, tipo.nombre_tipo as incidencias, incidencias.ciudad,
+	to_char(fecha_incidencia,'YYYY') as año, count(incidencias.id_incidencia) as atendio
+from incidencias inner join mantenimiento on incidencias.id_incidencia = mantenimiento.id_incidencia
+	inner join insumos on mantenimiento.id_mantenimiento = insumos.id_mantenimiento
+	inner join tipo on insumos.id_tipo = tipo.id_tipo
+	inner join mantenimiento_tecnico on mantenimiento.id_mantenimiento = mantenimiento_tecnico.id_mantenimiento
+	inner join tecnico on tecnico.id_tecnico = mantenimiento_tecnico.id_tecnico
+	where tipo.id_tipo = '0004' or tipo.id_tipo = '0005' or tipo.id_tipo = '0006'
+group by nombre_tecnico, tipo.nombre_tipo, incidencias.ciudad, to_char(fecha_incidencia,'YYYY')

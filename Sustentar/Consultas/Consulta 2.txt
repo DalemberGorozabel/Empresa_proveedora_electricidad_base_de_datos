@@ -1,0 +1,9 @@
+Consulta 2
+
+-->Incidentes por lugar, y año.
+select tipo.nombre_tipo as incidente_atendido, incidencias.ciudad, to_char(fecha_incidencia,'YYYY') as año, 
+	count(incidencias.id_incidencia) as incidentes
+from incidencias inner join mantenimiento on incidencias.id_incidencia = mantenimiento.id_incidencia
+	inner join insumos on mantenimiento.id_mantenimiento = insumos.id_mantenimiento
+	inner join tipo on insumos.id_tipo = tipo.id_tipo
+group by tipo.nombre_tipo, incidencias.ciudad, to_char(fecha_incidencia,'YYYY')

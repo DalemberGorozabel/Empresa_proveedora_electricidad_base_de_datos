@@ -1,0 +1,6 @@
+Consulta de Ireport
+
+select lugar_planilla, cast((sum(consumo_kilovatio*costo_kilovatio)) as numeric) as total, 
+	to_char(fecha_planilla,'YYYY') 
+from pago inner join planilla on pago.id_planilla = planilla.id_planilla
+	group by planilla.lugar_planilla, to_char(fecha_planilla,'YYYY')

@@ -1,0 +1,34 @@
+--PROCEDIMIENTO ALMACENADO
+create or replace function Detalles_tecnico(id varchar) returns varchar
+as $$ 
+declare
+	nombre varchar := '';
+	lugar varchar := '';
+	fecha integer;
+	mantenimientos integer:= 0;
+begin
+	if exists (select tecnico.id_tecnico from tecnico where tecnico.id_tecnico = id) then
+		select tecnico.nombre_tecnico,lugar_mantenimiento, to_char(fecha_mantenimiento,'YYYY'), 
+		count(mantenimiento.id_mantenimiento) into nombre, lugar, fecha, mantenimientos
+		from incidencias inner join mantenimiento on incidencias.id_incidencia = mantenimiento.id_incidencia
+		inner join insumos on mantenimiento.id_mantenimiento = insumos.id_mantenimiento
+		inner join tipo on insumos.id_tipo = tipo.id_tipo
+		inner join mantenimiento_tecnico on mantenimiento.id_mantenimiento = mantenimiento_tecnico.id_mantenimiento
+		inner join tecnico on tecnico.id_tecnico = mantenimiento_tecnico.id_tecnico
+		where tecnico.id_tecnico = id
+		group by tecnico.nombre_tecnico, lugar_mantenimiento, to_char(fecha_mantenimiento,'YYYY');
+			raise notice 
+			'
+			nombre del tecnico: %,
+			lugar: %,
+			fecha: %,
+			mantenimientos: %'
+			,nombre, lugar, fecha, mantenimientos;
+	else
+		raise notice 'El tecnico con la id "%" no existe en la Base de Datos', id;
+	end if;
+return mantenimientos;
+end $$
+language plpgsql;
+
+select Detalles_tecnico('0004')

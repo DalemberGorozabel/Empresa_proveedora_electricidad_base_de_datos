@@ -1,0 +1,26 @@
+--CURSOR
+do $$
+declare
+	registros record; --Para acceder a los datos del cursor
+	Tecnicos cursor for select * 
+		from incidencias inner join mantenimiento on incidencias.id_incidencia = mantenimiento.id_incidencia
+		inner join insumos on mantenimiento.id_mantenimiento = insumos.id_mantenimiento
+		inner join tipo on insumos.id_tipo = tipo.id_tipo
+		inner join mantenimiento_tecnico on mantenimiento.id_mantenimiento = mantenimiento_tecnico.id_mantenimiento
+		inner join tecnico on tecnico.id_tecnico = mantenimiento_tecnico.id_tecnico
+		where tipo.id_tipo = '0004' or tipo.id_tipo = '0005' or tipo.id_tipo = '0006';
+begin
+	for registros in Tecnicos
+	loop
+		raise notice 
+		'
+		Nombre del Tecnico: %,
+		Incidencias atendidas: %, 
+		Ciudad: %, 
+		Año: %, 
+		Total: %',
+		registros.nombre_tecnico, registros.nombre_tipo, registros.ciudad,
+		to_char(registros.fecha_incidencia,'YYYY'), count(registros.id_incidencia);
+	end loop;
+end $$
+language 'plpgsql';

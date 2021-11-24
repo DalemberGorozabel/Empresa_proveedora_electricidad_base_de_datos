@@ -1,0 +1,6 @@
+Consulta 1
+
+-->Suma de consumo por lugar y año
+select lugar_planilla, sum(consumo_kilovatio*costo_kilovatio), to_char(fecha_planilla,'YYYY') 
+from pago inner join planilla on pago.id_planilla = planilla.id_planilla
+group by planilla.lugar_planilla, to_char(fecha_planilla,'YYYY')

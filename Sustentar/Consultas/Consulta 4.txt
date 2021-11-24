@@ -1,0 +1,9 @@
+Consulta 4
+
+-->Históricos de insumos por año
+select tipo.nombre_tipo,insumos.lugar_instalacion, 
+	count(insumos.id_insumo) as insumos,to_char(fecha_instalacion,'YYYY') as año
+from insumos inner join tipo on insumos.id_tipo =tipo.id_tipo
+	where tipo.id_tipo = '0004' or tipo.id_tipo = '0005' or tipo.id_tipo = '0006'
+group by tipo.nombre_tipo,insumos.lugar_instalacion,to_char(fecha_instalacion,'YYYY')
+order by to_char(fecha_instalacion,'YYYY')

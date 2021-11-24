@@ -1,0 +1,30 @@
+Consulta tigger
+
+--TRIGGER
+CREATE OR REPLACE FUNCTION ft_alerta()
+RETURNS TRIGGER AS $$
+DECLARE
+	convenio integer:= 0;
+BEGIN
+		--Consultar el dato
+	select count(contrato.consta_convenio) into convenio
+	from cliente inner join convenio on cliente.id_cliente = convenio.id_cliente
+	inner join contrato on contrato.id_medidor = convenio.id_medidor
+	where contrato.consta_convenio like '%si%' and cliente.id_cliente = new.id_cliente;
+		--Enviar alerta
+	if (convenio = 1) then 
+		raise exception 'No puede adquirir un contrato nuevo porque consta con un convenio';
+	else
+		RETURN NEW;
+	end if;
+END $$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER tr_alerta
+BEFORE INSERT OR UPDATE ON convenio
+FOR EACH ROW
+EXECUTE PROCEDURE ft_alerta()
+---------------------------------------------------------------------------------------------------------------------------
+Consulta Trigger
+
+insert into convenio values ('0005','0005','15',10000,150,'2020-02-29')
